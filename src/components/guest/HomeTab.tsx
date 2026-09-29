@@ -37,8 +37,16 @@ export const HomeTab: React.FC = () => {
           
           {/* Top Tag & Eircode Badge */}
           <div className="absolute top-4 left-4 right-4 flex items-center justify-between text-xs text-white">
-            <div className="flex items-center gap-1.5 bg-[#14382c]/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-              <Sparkles className="w-3.5 h-3.5 text-[#c5a059]" />
+            <div className="flex items-center gap-2 bg-[#14382c]/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+              {hotelData.logoImage ? (
+                <img
+                  src={hotelData.logoImage}
+                  alt="Hotel Logo"
+                  className="w-4 h-4 rounded-full object-cover border border-[#c5a059]"
+                />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 text-[#c5a059]" />
+              )}
               <span className="font-semibold tracking-wide">4-Star Resort</span>
             </div>
             <div className="bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15 text-[11px] font-mono text-white/90">
@@ -48,6 +56,15 @@ export const HomeTab: React.FC = () => {
 
           {/* Hero Content */}
           <div className="absolute bottom-4 left-4 right-4 text-white">
+            {hotelData.logoImage && (
+              <div className="mb-2">
+                <img
+                  src={hotelData.logoImage}
+                  alt="Resort Logo"
+                  className="h-8 max-w-[120px] object-contain rounded-md drop-shadow-md bg-black/30 backdrop-blur-xs p-1 border border-white/10"
+                />
+              </div>
+            )}
             <div className="text-[#c5a059] text-xs font-semibold tracking-widest uppercase mb-1">
               Welcome to Tipperary
             </div>

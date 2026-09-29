@@ -17,6 +17,7 @@ import { useHotel } from '../context/HotelContext';
 
 export const TopDeviceBar: React.FC = () => {
   const { 
+    hotelData,
     viewMode, 
     setViewMode, 
     appMode, 
@@ -84,8 +85,17 @@ export const TopDeviceBar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-4">
         {/* Zone 1: Single text element wordmark */}
         <div className="flex items-center gap-2.5 shrink-0">
+          {hotelData.logoImage ? (
+            <img
+              src={hotelData.logoImage}
+              alt="Logo"
+              className="w-7 h-7 rounded-lg object-contain bg-white/10 p-0.5 border border-white/20"
+            />
+          ) : (
+            <span className="text-[#c5a059]">✦</span>
+          )}
           <span className="font-serif text-lg sm:text-xl font-bold tracking-wide text-white flex items-center gap-1.5">
-            <span className="text-[#c5a059]">✦</span> Ballykisteen
+            Ballykisteen
           </span>
           <div className="hidden lg:flex items-center gap-2 text-xs text-white/50 pl-2 border-l border-white/10">
             <span>Tipperary</span>

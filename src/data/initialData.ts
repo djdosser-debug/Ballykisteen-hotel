@@ -3,6 +3,7 @@ import { HotelData } from '../types/guidebook';
 export const initialHotelData: HotelData = {
   name: "Great National Ballykisteen Golf Hotel & Leisure Club",
   tagline: "4-Star Country Resort & 18-Hole Championship Golf Course",
+  logoImage: "",
   heroImage: "/src/assets/images/ballykisteen_resort_hero_1790677395754.jpg",
   diningImage: "/src/assets/images/junction_one_dining_1790677408670.jpg",
   leisureImage: "/src/assets/images/leisure_pool_spa_1790677420010.jpg",
@@ -110,7 +111,8 @@ export const initialHotelData: HotelData = {
       travelTime: "2 min walk",
       description: "Premier Irish horse racing venue hosting both flat and National Hunt race fixtures right adjacent to the hotel grounds.",
       insiderTip: "Hotel guests receive special discounts on race day admissions. Check with front desk for the current fixture calendar.",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Tipperary+Racecourse+Limerick+Junction"
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Tipperary+Racecourse+Limerick+Junction",
+      image: "/src/assets/images/championship_golf_course_1790677430157.jpg"
     },
     {
       id: "limerick-junction-station",
@@ -120,7 +122,8 @@ export const initialHotelData: HotelData = {
       travelTime: "3 min walk",
       description: "Historical and vital railway hub connecting Dublin Heuston, Cork Kent, Limerick Colbert, and Kerry directly.",
       insiderTip: "Perfect for a car-free day trip to Limerick City (only 25 mins by direct train) or Cork City (50 mins).",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Limerick+Junction+Railway+Station"
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Limerick+Junction+Railway+Station",
+      image: ""
     },
     {
       id: "the-junction-gastrobar",
@@ -130,7 +133,8 @@ export const initialHotelData: HotelData = {
       travelTime: "3 min walk",
       description: "Cozy local Irish pub known for friendly hospitality, creamy pints of Guinness, and classic bar dining.",
       insiderTip: "A lovely spot for an informal evening pint and chatting with Tipperary locals.",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=The+Junction+Gastrobar+Limerick+Junction"
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=The+Junction+Gastrobar+Limerick+Junction",
+      image: "/src/assets/images/junction_one_dining_1790677408670.jpg"
     },
     {
       id: "glen-of-aherlow",
@@ -140,7 +144,8 @@ export const initialHotelData: HotelData = {
       travelTime: "15 min drive",
       description: "Breath-taking lush valley nestled between the Galtee Mountains and the wooded Slievenamuck ridge, offering loop walks, lake trails, and panoramic viewpoints.",
       insiderTip: "Visit Christ the King statue viewpoint for spectacular panoramic photo views of the entire Galtee mountain range.",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Glen+of+Aherlow+Tipperary"
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Glen+of+Aherlow+Tipperary",
+      image: "/src/assets/images/ballykisteen_resort_hero_1790677395754.jpg"
     },
     {
       id: "rock-of-cashel",
@@ -150,7 +155,8 @@ export const initialHotelData: HotelData = {
       travelTime: "25 min drive",
       description: "One of Ireland's most spectacular historic landmarks. The seat of the ancient Kings of Munster featuring a 12th-century round tower, Cormac's Chapel, and Gothic cathedral.",
       insiderTip: "Pre-book tickets online to secure audio guides and climb the historic hill during morning light for the best photographs.",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Rock+of+Cashel+Tipperary"
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Rock+of+Cashel+Tipperary",
+      image: ""
     },
     {
       id: "cahir-castle",
@@ -160,7 +166,8 @@ export const initialHotelData: HotelData = {
       travelTime: "25 min drive",
       description: "One of Ireland's largest and best-preserved medieval castles on an island in the River Suir. Followed by a scenic woodland walk to the whimsical 19th-century Swiss Cottage.",
       insiderTip: "Movie buffs will recognise Cahir Castle from 'Excalibur' and Ridley Scott's 'The Last Duel'.",
-      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Cahir+Castle+Tipperary"
+      mapsUrl: "https://www.google.com/maps/search/?api=1&query=Cahir+Castle+Tipperary",
+      image: ""
     }
   ],
   guideSections: [
@@ -169,6 +176,7 @@ export const initialHotelData: HotelData = {
       title: "Check-in & Departure Guidelines",
       iconName: "KeyRound",
       badge: "Essential",
+      image: "/src/assets/images/ballykisteen_resort_hero_1790677395754.jpg",
       items: [
         {
           heading: "Standard Arrival & Check-in",
@@ -193,6 +201,7 @@ export const initialHotelData: HotelData = {
       title: "Dining, Bar & Room Service",
       iconName: "Utensils",
       badge: "Junction One",
+      image: "/src/assets/images/junction_one_dining_1790677408670.jpg",
       items: [
         {
           heading: "Junction One Restaurant Hours",
@@ -213,6 +222,7 @@ export const initialHotelData: HotelData = {
       title: "18-Hole Championship Golf",
       iconName: "Flag",
       badge: "Des Smyth Design",
+      image: "/src/assets/images/championship_golf_course_1790677430157.jpg",
       items: [
         {
           heading: "Tee Time Booking & Preferential Rates",
@@ -237,6 +247,7 @@ export const initialHotelData: HotelData = {
       title: "Leisure Club, Pool & Beauty Rooms",
       iconName: "Waves",
       badge: "Complimentary",
+      image: "/src/assets/images/leisure_pool_spa_1790677420010.jpg",
       items: [
         {
           heading: "Pool, Jacuzzi, Sauna & Steam Room",

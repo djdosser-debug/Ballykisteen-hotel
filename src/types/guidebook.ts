@@ -31,6 +31,7 @@ export interface DiningItem {
   description: string;
   hours: string;
   highlight?: string;
+  image?: string;
 }
 
 export interface LeisureSchedule {
@@ -73,6 +74,7 @@ export interface GuideSection {
   title: string;
   iconName: string;
   badge?: string;
+  image?: string;
   items: {
     heading: string;
     details: string;
@@ -112,6 +114,7 @@ export interface StandeeConfig {
 export interface HotelData {
   name: string;
   tagline: string;
+  logoImage?: string;
   heroImage: string;
   diningImage: string;
   leisureImage: string;

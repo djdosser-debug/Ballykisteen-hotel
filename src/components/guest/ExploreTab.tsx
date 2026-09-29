@@ -74,54 +74,76 @@ export const ExploreTab: React.FC = () => {
           return (
             <div
               key={attraction.id}
-              className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs hover:shadow-md transition-all space-y-2.5"
+              className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-2xs hover:shadow-md transition-all space-y-2.5"
             >
-              {/* Top Row: Title & Distance */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <h3 className="font-serif text-base font-bold text-slate-900 leading-snug">
-                    {attraction.name}
-                  </h3>
-                  <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
-                    <span className="flex items-center gap-1 text-[#14382c] font-semibold">
-                      {isWalking ? (
-                        <Footprints className="w-3.5 h-3.5 text-emerald-700" />
-                      ) : (
-                        <Car className="w-3.5 h-3.5 text-blue-700" />
-                      )}
-                      <span>{attraction.travelTime}</span>
+              {/* Optional Attraction Image Banner */}
+              {attraction.image && (
+                <div className="relative h-40 w-full bg-slate-100 overflow-hidden">
+                  <img
+                    src={attraction.image}
+                    alt={attraction.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-2 left-3 text-white text-[11px] font-semibold flex items-center gap-1.5">
+                    <span className="bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-md">
+                      {attraction.distanceKm} · {attraction.travelTime}
                     </span>
-                    <span aria-hidden="true">·</span>
-                    <span>{attraction.distanceKm}</span>
-                  </div>
-                </div>
-
-                <a
-                  href={attraction.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-all flex items-center gap-1.5 shrink-0 shadow-2xs active:scale-95"
-                >
-                  <Navigation className="w-3.5 h-3.5 text-[#c5a059]" />
-                  <span>Directions</span>
-                </a>
-              </div>
-
-              {/* Description */}
-              <p className="text-xs text-slate-600 leading-relaxed">
-                {attraction.description}
-              </p>
-
-              {/* Insider Tip Box */}
-              {attraction.insiderTip && (
-                <div className="p-2.5 rounded-xl bg-[#f8f6f0] border border-[#c5a059]/25 text-xs text-slate-700 flex items-start gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-[#c5a059] shrink-0 mt-0.5" />
-                  <div className="text-[11px] leading-relaxed">
-                    <strong className="text-[#14382c] font-semibold mr-1">Insider Tip:</strong>
-                    {attraction.insiderTip}
                   </div>
                 </div>
               )}
+
+              <div className="p-4 pt-3 space-y-2.5">
+                {/* Top Row: Title & Distance */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="font-serif text-base font-bold text-slate-900 leading-snug">
+                      {attraction.name}
+                    </h3>
+                    {!attraction.image && (
+                      <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
+                        <span className="flex items-center gap-1 text-[#14382c] font-semibold">
+                          {isWalking ? (
+                            <Footprints className="w-3.5 h-3.5 text-emerald-700" />
+                          ) : (
+                            <Car className="w-3.5 h-3.5 text-blue-700" />
+                          )}
+                          <span>{attraction.travelTime}</span>
+                        </span>
+                        <span aria-hidden="true">·</span>
+                        <span>{attraction.distanceKm}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <a
+                    href={attraction.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-all flex items-center gap-1.5 shrink-0 shadow-2xs active:scale-95"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-[#c5a059]" />
+                    <span>Directions</span>
+                  </a>
+                </div>
+
+                {/* Description */}
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {attraction.description}
+                </p>
+
+                {/* Insider Tip Box */}
+                {attraction.insiderTip && (
+                  <div className="p-2.5 rounded-xl bg-[#f8f6f0] border border-[#c5a059]/25 text-xs text-slate-700 flex items-start gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-[#c5a059] shrink-0 mt-0.5" />
+                    <div className="text-[11px] leading-relaxed">
+                      <strong className="text-[#14382c] font-semibold mr-1">Insider Tip:</strong>
+                      {attraction.insiderTip}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}

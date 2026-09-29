@@ -138,10 +138,18 @@ export const PrintStandeeModal: React.FC = () => {
             <div className="absolute inset-2 border border-[#c5a059]/50 rounded-xl pointer-events-none" />
 
             {/* Header / Crest */}
-            <div className="pt-2 z-10">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#14382c] text-[#c5a059] mb-3 shadow-sm border border-[#c5a059]/40">
-                <Sparkles className="w-6 h-6" />
-              </div>
+            <div className="pt-2 z-10 flex flex-col items-center">
+              {hotelData.logoImage ? (
+                <img
+                  src={hotelData.logoImage}
+                  alt="Hotel Logo"
+                  className="h-12 max-w-[140px] object-contain mb-2.5 rounded-lg border border-[#c5a059]/40 bg-white p-1"
+                />
+              ) : (
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#14382c] text-[#c5a059] mb-3 shadow-sm border border-[#c5a059]/40">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+              )}
               <div className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[#c5a059] mb-1">
                 Great National
               </div>

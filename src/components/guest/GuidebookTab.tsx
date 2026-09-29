@@ -110,6 +110,19 @@ export const GuidebookTab: React.FC = () => {
               {/* Collapsible Content */}
               {isExpanded && (
                 <div className="px-4 pb-4 pt-1 border-t border-slate-100 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                  {/* Optional Section Banner Image */}
+                  {section.image && (
+                    <div className="relative h-36 w-full rounded-xl overflow-hidden bg-slate-100 my-2">
+                      <img
+                        src={section.image}
+                        alt={section.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                    </div>
+                  )}
+
                   {section.items.map((item, idx) => (
                     <div
                       key={idx}
