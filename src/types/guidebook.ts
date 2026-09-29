@@ -57,6 +57,14 @@ export interface GolfInfo {
   courseStatus: string;
 }
 
+export interface BookingLinks {
+  hotelWebsite: string;
+  tableBookingUrl: string;
+  teeTimeBookingUrl: string;
+  spaBookingUrl: string;
+  roomBookingUrl: string;
+}
+
 export interface Attraction {
   id: string;
   name: string;
@@ -123,6 +131,7 @@ export interface HotelData {
   stayHours: StayHours;
   wifi: WifiInfo;
   bulletin: ResortBulletin;
+  bookingLinks: BookingLinks;
   dining: DiningItem[];
   leisure: LeisureSchedule;
   golf: GolfInfo;

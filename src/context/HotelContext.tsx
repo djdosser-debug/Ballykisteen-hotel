@@ -40,7 +40,13 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return { ...initialHotelData, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        return { 
+          ...initialHotelData, 
+          ...parsed,
+          logoImage: parsed.logoImage || initialHotelData.logoImage,
+          bookingLinks: { ...initialHotelData.bookingLinks, ...(parsed.bookingLinks || {}) }
+        };
       }
     } catch (e) {
       console.error('Failed to parse saved hotel data', e);

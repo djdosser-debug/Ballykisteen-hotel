@@ -1,5 +1,5 @@
 import React from 'react';
-import { Utensils, X, Clock, Phone, Award } from 'lucide-react';
+import { Utensils, X, Clock, Phone, Award, ExternalLink } from 'lucide-react';
 import { useHotel } from '../../context/HotelContext';
 
 export const DiningReserveModal: React.FC = () => {
@@ -46,22 +46,35 @@ export const DiningReserveModal: React.FC = () => {
         {/* Content */}
         <div className="p-5 overflow-y-auto space-y-4 text-xs">
           {/* Quick Reserve / Room Service Bar */}
-          <div className="bg-[#14382c] text-white p-3.5 rounded-2xl flex items-center justify-between gap-3">
+          <div className="bg-[#14382c] text-white p-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-[11px] text-[#c5a059] font-semibold uppercase tracking-wider">
                 Table Reservations & Room Service
               </div>
               <div className="text-xs text-white/90 mt-0.5">
-                Dial <strong>Ext. 0</strong> from your room phone
+                Dial <strong>Ext. 0</strong> or book online
               </div>
             </div>
-            <a
-              href={`tel:${contact.receptionPhone}`}
-              className="px-3.5 py-2 bg-[#c5a059] text-[#14382c] rounded-xl font-bold text-xs shrink-0 hover:bg-[#d4af37] flex items-center gap-1.5 shadow-xs"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>Call Now</span>
-            </a>
+            <div className="flex items-center gap-2">
+              {hotelData.bookingLinks?.tableBookingUrl && (
+                <a
+                  href={hotelData.bookingLinks.tableBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 bg-white text-[#14382c] rounded-xl font-bold text-xs hover:bg-slate-100 flex items-center gap-1.5 shadow-xs"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-[#14382c]" />
+                  <span>Book Online</span>
+                </a>
+              )}
+              <a
+                href={`tel:${contact.receptionPhone}`}
+                className="px-3 py-2 bg-[#c5a059] text-[#14382c] rounded-xl font-bold text-xs shrink-0 hover:bg-[#d4af37] flex items-center gap-1.5 shadow-xs"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>Call Ext. 0</span>
+              </a>
+            </div>
           </div>
 
           {/* Menus list */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Waves, X, Clock, AlertCircle, Phone, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Waves, X, Clock, AlertCircle, Phone, Sparkles, CheckCircle2, ExternalLink } from 'lucide-react';
 import { useHotel } from '../../context/HotelContext';
 
 export const LeisurePoolModal: React.FC = () => {
@@ -106,7 +106,7 @@ export const LeisurePoolModal: React.FC = () => {
           </div>
 
           {/* Spa Treatment Callout */}
-          <div className="bg-[#14382c]/5 p-3.5 rounded-2xl border border-[#14382c]/10 flex items-center justify-between gap-3">
+          <div className="bg-[#14382c]/5 p-3.5 rounded-2xl border border-[#14382c]/10 flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 text-xs font-semibold text-[#14382c]">
                 <Sparkles className="w-3.5 h-3.5 text-[#c5a059]" />
@@ -116,13 +116,26 @@ export const LeisurePoolModal: React.FC = () => {
                 Massages, organic seaweed facials & therapies
               </p>
             </div>
-            <a
-              href={`tel:${contact.receptionPhone}`}
-              className="px-3 py-2 bg-[#14382c] text-white rounded-xl text-xs font-semibold shrink-0 hover:bg-[#1c4a3a] flex items-center gap-1.5"
-            >
-              <Phone className="w-3 h-3" />
-              <span>Book Spa</span>
-            </a>
+            <div className="flex items-center gap-2">
+              {hotelData.bookingLinks?.spaBookingUrl && (
+                <a
+                  href={hotelData.bookingLinks.spaBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 bg-[#14382c] text-white rounded-xl text-xs font-semibold hover:bg-[#1c4a3a] flex items-center gap-1.5 shadow-2xs"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-[#c5a059]" />
+                  <span>Book Online</span>
+                </a>
+              )}
+              <a
+                href={`tel:${contact.receptionPhone}`}
+                className="px-3 py-2 bg-emerald-800 text-white rounded-xl text-xs font-semibold hover:bg-emerald-900 flex items-center gap-1.5 shadow-2xs"
+              >
+                <Phone className="w-3 h-3" />
+                <span>Call Ext. 0</span>
+              </a>
+            </div>
           </div>
 
           {/* Action button */}

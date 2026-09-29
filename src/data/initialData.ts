@@ -3,7 +3,7 @@ import { HotelData } from '../types/guidebook';
 export const initialHotelData: HotelData = {
   name: "Great National Ballykisteen Golf Hotel & Leisure Club",
   tagline: "4-Star Country Resort & 18-Hole Championship Golf Course",
-  logoImage: "",
+  logoImage: "/ballykisteen_hotel_logo.jpg",
   heroImage: "/src/assets/images/ballykisteen_resort_hero_1790677395754.jpg",
   diningImage: "/src/assets/images/junction_one_dining_1790677408670.jpg",
   leisureImage: "/src/assets/images/leisure_pool_spa_1790677420010.jpg",
@@ -39,6 +39,13 @@ export const initialHotelData: HotelData = {
     todaysSpecial: "Slow-Braised Tipperary Beef Featherblade with creamy colcannon & roast shallot jus",
     breakfastStatus: "Served in Junction One Restaurant until 10:30 AM",
     announcement: "Complimentary access to the heated indoor pool, jacuzzi & Finnish sauna is included with your stay key."
+  },
+  bookingLinks: {
+    hotelWebsite: "https://www.ballykisteenhotel.com",
+    tableBookingUrl: "https://www.ballykisteenhotel.com/dining/",
+    teeTimeBookingUrl: "https://www.ballykisteenhotel.com/golf/",
+    spaBookingUrl: "https://www.ballykisteenhotel.com/leisure-spa/",
+    roomBookingUrl: "https://www.ballykisteenhotel.com/rooms/"
   },
   dining: [
     {

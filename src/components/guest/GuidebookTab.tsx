@@ -10,7 +10,18 @@ import {
   Phone, 
   Wifi, 
   Calendar,
-  Sparkles
+  Sparkles,
+  Coffee,
+  Car,
+  MapPin,
+  Info,
+  Clock,
+  Heart,
+  Award,
+  HelpCircle,
+  BedDouble,
+  ExternalLink,
+  BookOpen
 } from 'lucide-react';
 import { useHotel } from '../../context/HotelContext';
 import { GuideSection } from '../../types/guidebook';
@@ -22,6 +33,20 @@ const iconMap: Record<string, React.ElementType> = {
   Waves,
   Tv,
   ShieldAlert,
+  Coffee,
+  Car,
+  MapPin,
+  Info,
+  Clock,
+  Heart,
+  Award,
+  HelpCircle,
+  BedDouble,
+  BookOpen,
+  Sparkles,
+  Phone,
+  Wifi,
+  Calendar
 };
 
 export const GuidebookTab: React.FC = () => {
@@ -135,6 +160,50 @@ export const GuidebookTab: React.FC = () => {
                       <p className="text-xs text-slate-600 leading-relaxed pl-3">
                         {item.details}
                       </p>
+
+                      {/* Optional Action Button configured by Host */}
+                      {item.actionLabel && (
+                        <div className="pl-3 pt-1">
+                          {item.actionType === 'link' && item.actionPayload && (
+                            <a
+                              href={item.actionPayload}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#14382c] text-white text-[11px] font-semibold hover:bg-[#1c4a3a] transition-colors shadow-2xs"
+                            >
+                              <ExternalLink className="w-3 h-3 text-[#c5a059]" />
+                              <span>{item.actionLabel}</span>
+                            </a>
+                          )}
+                          {item.actionType === 'call' && (
+                            <a
+                              href={`tel:${item.actionPayload || hotelData.contact.receptionPhone}`}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#14382c] text-white text-[11px] font-semibold hover:bg-[#1c4a3a] transition-colors shadow-2xs"
+                            >
+                              <Phone className="w-3 h-3 text-[#c5a059]" />
+                              <span>{item.actionLabel}</span>
+                            </a>
+                          )}
+                          {item.actionType === 'wifi' && (
+                            <button
+                              onClick={() => setActiveModal('wifi')}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#14382c] text-white text-[11px] font-semibold hover:bg-[#1c4a3a] transition-colors shadow-2xs"
+                            >
+                              <Wifi className="w-3 h-3 text-[#c5a059]" />
+                              <span>{item.actionLabel}</span>
+                            </button>
+                          )}
+                          {item.actionType === 'modal' && (
+                            <button
+                              onClick={() => setActiveModal((item.actionPayload as any) || 'dining')}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#14382c] text-white text-[11px] font-semibold hover:bg-[#1c4a3a] transition-colors shadow-2xs"
+                            >
+                              <Sparkles className="w-3 h-3 text-[#c5a059]" />
+                              <span>{item.actionLabel}</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
 
@@ -142,7 +211,7 @@ export const GuidebookTab: React.FC = () => {
                   {section.id === 'check-in-departure' && (
                     <button
                       onClick={() => setActiveModal('roomKey')}
-                      className="w-full py-2.5 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5"
+                      className="w-full py-2.5 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                     >
                       <KeyRound className="w-3.5 h-3.5 text-[#c5a059]" />
                       <span>View Check-in & Keycard Guidance</span>
@@ -153,17 +222,19 @@ export const GuidebookTab: React.FC = () => {
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       <button
                         onClick={() => setActiveModal('dining')}
-                        className="py-2.5 px-3 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5"
+                        className="py-2.5 px-3 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                       >
                         <Utensils className="w-3.5 h-3.5 text-[#c5a059]" />
                         <span>Dining Menus</span>
                       </button>
                       <a
-                        href={`tel:${hotelData.contact.receptionPhone}`}
-                        className="py-2.5 px-3 rounded-xl bg-orange-700 text-white text-xs font-semibold hover:bg-orange-800 transition-colors flex items-center justify-center gap-1.5"
+                        href={hotelData.bookingLinks?.tableBookingUrl || `tel:${hotelData.contact.receptionPhone}`}
+                        target={hotelData.bookingLinks?.tableBookingUrl ? "_blank" : undefined}
+                        rel="noopener noreferrer"
+                        className="py-2.5 px-3 rounded-xl bg-orange-700 text-white text-xs font-semibold hover:bg-orange-800 transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                       >
-                        <Phone className="w-3.5 h-3.5" />
-                        <span>Order Room Service</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Book Table Online</span>
                       </a>
                     </div>
                   )}
@@ -172,37 +243,48 @@ export const GuidebookTab: React.FC = () => {
                     <div className="grid grid-cols-2 gap-2 pt-1">
                       <a
                         href={`tel:${hotelData.contact.golfPhone}`}
-                        className="py-2.5 px-3 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5"
+                        className="py-2.5 px-3 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                       >
                         <Phone className="w-3.5 h-3.5 text-[#c5a059]" />
                         <span>Call Pro Shop</span>
                       </a>
                       <a
-                        href={hotelData.contact.website}
+                        href={hotelData.bookingLinks?.teeTimeBookingUrl || hotelData.contact.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="py-2.5 px-3 rounded-xl bg-slate-100 text-slate-800 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center justify-center gap-1.5"
+                        className="py-2.5 px-3 rounded-xl bg-slate-100 text-slate-800 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center justify-center gap-1.5 border border-slate-200"
                       >
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>Tee Times Online</span>
+                        <Calendar className="w-3.5 h-3.5 text-emerald-700" />
+                        <span>Book Tee Time</span>
                       </a>
                     </div>
                   )}
 
                   {section.id === 'leisure-spa-guide' && (
-                    <button
-                      onClick={() => setActiveModal('leisure')}
-                      className="w-full py-2.5 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5"
-                    >
-                      <Waves className="w-3.5 h-3.5 text-[#c5a059]" />
-                      <span>View Pool & Spa Timetable</span>
-                    </button>
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button
+                        onClick={() => setActiveModal('leisure')}
+                        className="py-2.5 px-3 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
+                      >
+                        <Waves className="w-3.5 h-3.5 text-[#c5a059]" />
+                        <span>Pool Timetables</span>
+                      </button>
+                      <a
+                        href={hotelData.bookingLinks?.spaBookingUrl || `tel:${hotelData.contact.receptionPhone}`}
+                        target={hotelData.bookingLinks?.spaBookingUrl ? "_blank" : undefined}
+                        rel="noopener noreferrer"
+                        className="py-2.5 px-3 rounded-xl bg-emerald-800 text-white text-xs font-semibold hover:bg-emerald-900 transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-[#c5a059]" />
+                        <span>Book Spa Online</span>
+                      </a>
+                    </div>
                   )}
 
                   {section.id === 'room-amenities' && (
                     <button
                       onClick={() => setActiveModal('wifi')}
-                      className="w-full py-2.5 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5"
+                      className="w-full py-2.5 rounded-xl bg-[#14382c] text-white text-xs font-semibold hover:bg-[#1c4a3a] transition-colors flex items-center justify-center gap-1.5 shadow-2xs"
                     >
                       <Wifi className="w-3.5 h-3.5 text-[#c5a059]" />
                       <span>Connect to Wi-Fi</span>
