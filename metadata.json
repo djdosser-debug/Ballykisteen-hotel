@@ -1,0 +1,6 @@
+{
+  "name": "Ballykisteen Digital Guest Guidebook",
+  "description": "Mobile-first digital guest welcome guidebook and host management console for Great National Ballykisteen Golf Hotel & Leisure Club in Tipperary, Ireland.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
