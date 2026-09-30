@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Eye, EyeOff, X, KeyRound, ShieldAlert } from 'lucide-react';
+import { Lock, Eye, EyeOff, X, KeyRound, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useHotel } from '../../context/HotelContext';
 
 export const HostLoginModal: React.FC = () => {
@@ -18,12 +18,14 @@ export const HostLoginModal: React.FC = () => {
     } else {
       setError(false);
       setPasscode('');
+      setActiveModal(null);
     }
   };
 
-  const handleUseDemoPasscode = () => {
-    setPasscode(hotelData.hostPasscode || 'ballykisteen2025');
-    setError(false);
+  const handleQuickUnlock = () => {
+    const code = hotelData.hostPasscode || 'ballykisteen2025';
+    setPasscode(code);
+    loginHost(code);
   };
 
   return (
@@ -58,7 +60,7 @@ export const HostLoginModal: React.FC = () => {
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <p className="text-xs text-slate-600 leading-relaxed">
-            Enter the property administration passcode to configure guest Wi-Fi, dining specials, golf schedules, and print table standees.
+            Enter the administration passcode to configure guest Wi-Fi, dining specials, golf schedules, and print table standees.
           </p>
 
           <div className="space-y-1.5">
@@ -91,25 +93,33 @@ export const HostLoginModal: React.FC = () => {
               </button>
             </div>
             {error && (
-              <div className="flex items-center gap-1.5 text-xs text-red-600 pt-1">
-                <ShieldAlert className="w-3.5 h-3.5" />
-                <span>Incorrect passcode. Please try again.</span>
+              <div className="p-2 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 space-y-0.5">
+                <div className="flex items-center gap-1.5 font-semibold">
+                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
+                  <span>Passcode not recognized</span>
+                </div>
+                <p className="text-[11px] text-red-600 pl-5">
+                  Try default passcode: <strong className="font-mono">ballykisteen2025</strong>
+                </p>
               </div>
             )}
           </div>
 
-          {/* Quick Demo Helper Hint */}
-          <div className="p-3 bg-amber-50/70 border border-amber-200/60 rounded-xl flex items-center justify-between gap-2 text-xs">
-            <div className="text-amber-800">
-              <span className="font-semibold block">Default Passcode:</span>
-              <code className="font-mono text-slate-700">{hotelData.hostPasscode}</code>
+          {/* Quick Staff Helper Box */}
+          <div className="p-3 bg-amber-50/80 border border-amber-200/70 rounded-xl flex items-center justify-between gap-2 text-xs">
+            <div className="min-w-0">
+              <span className="font-semibold text-amber-900 block text-[11px]">Resort Passcode:</span>
+              <code className="font-mono text-[#14382c] font-bold text-xs truncate block">
+                {hotelData.hostPasscode || 'ballykisteen2025'}
+              </code>
             </div>
             <button
               type="button"
-              onClick={handleUseDemoPasscode}
-              className="text-[11px] font-semibold text-amber-900 bg-amber-200/70 px-2 py-1 rounded-md hover:bg-amber-200"
+              onClick={handleQuickUnlock}
+              className="text-xs font-bold text-white bg-[#14382c] hover:bg-[#1c4a3a] px-3 py-1.5 rounded-lg shrink-0 flex items-center gap-1 shadow-2xs active:scale-95 transition-all"
             >
-              Fill Code
+              <Sparkles className="w-3 h-3 text-[#c5a059]" />
+              <span>Quick Unlock</span>
             </button>
           </div>
 
@@ -124,7 +134,7 @@ export const HostLoginModal: React.FC = () => {
             <button
               type="button"
               onClick={() => setActiveModal(null)}
-              className="w-full py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-700"
+              className="w-full py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-700"
             >
               Cancel
             </button>
