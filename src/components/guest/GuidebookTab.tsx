@@ -143,6 +143,10 @@ export const GuidebookTab: React.FC = () => {
                         alt={section.title}
                         className="w-full h-full object-cover"
                         loading="lazy"
+                        onError={(e) => {
+                          const parent = e.currentTarget.parentElement;
+                          if (parent) parent.style.display = 'none';
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                     </div>

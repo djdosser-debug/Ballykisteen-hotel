@@ -42,10 +42,10 @@ import { generateQrDataUrl, buildWifiQrString } from '../../utils/qrCode';
 import { ImageUploadField } from './ImageUploadField';
 
 const resortPresets = [
-  { label: 'Resort Exterior', url: '/src/assets/images/ballykisteen_resort_hero_1790677395754.jpg' },
-  { label: 'Junction One Restaurant', url: '/src/assets/images/junction_one_dining_1790677408670.jpg' },
-  { label: 'Indoor Heated Pool', url: '/src/assets/images/leisure_pool_spa_1790677420010.jpg' },
-  { label: 'Championship Golf', url: '/src/assets/images/championship_golf_course_1790677430157.jpg' },
+  { label: 'Resort Exterior', url: '/images/ballykisteen_resort_hero_1790677395754.jpg' },
+  { label: 'Junction One Restaurant', url: '/images/junction_one_dining_1790677408670.jpg' },
+  { label: 'Indoor Heated Pool', url: '/images/leisure_pool_spa_1790677420010.jpg' },
+  { label: 'Championship Golf', url: '/images/championship_golf_course_1790677430157.jpg' },
 ];
 
 const logoPresets = [
@@ -280,11 +280,19 @@ export const HostConsole: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setAppMode('guest')}
+            onClick={async () => {
+              try {
+                await updateHotelData(formData);
+                showToast('Changes saved & synced to Guest Portal');
+              } catch (e) {
+                console.warn('Auto-save error:', e);
+              }
+              setAppMode('guest');
+            }}
             className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Eye className="w-4 h-4 text-[#c5a059]" />
-            <span>Preview Portal</span>
+            <span>Save & Preview</span>
           </button>
           <button
             onClick={logoutHost}

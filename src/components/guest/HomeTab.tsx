@@ -27,10 +27,16 @@ export const HomeTab: React.FC = () => {
       <div className="relative rounded-3xl overflow-hidden shadow-lg border border-[#14382c]/15 bg-[#14382c]">
         <div className="relative h-64 sm:h-72 w-full">
           <img
-            src={hotelData.heroImage}
+            src={hotelData.heroImage || '/images/ballykisteen_resort_hero_1790677395754.jpg'}
             alt="Great National Ballykisteen Golf Hotel & Leisure Club"
             className="w-full h-full object-cover"
             loading="eager"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.src.includes('ballykisteen_resort_hero')) {
+                target.src = '/images/ballykisteen_resort_hero_1790677395754.jpg';
+              }
+            }}
           />
           {/* Measured Scrim for Media Overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/20" />
