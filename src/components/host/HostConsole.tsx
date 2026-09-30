@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Building2, 
   Wifi, 
@@ -95,13 +95,32 @@ export const HostConsole: React.FC = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [expandedSectionId, setExpandedSectionId] = useState<string>('');
+  const isDirtyRef = useRef(false);
 
   useEffect(() => {
-    setFormData(hotelData);
+    // Only update from external hotelData if the user hasn't made local uncommitted edits
+    if (!isDirtyRef.current) {
+      setFormData(hotelData);
+    }
     if (hotelData.guideSections.length > 0 && !expandedSectionId) {
       setExpandedSectionId(hotelData.guideSections[0].id);
     }
   }, [hotelData]);
+
+  // Immediate save & broadcast for image changes so they are never lost on reload
+  const handleUpdateImage = async (
+    field: 'heroImage' | 'logoImage' | 'diningImage' | 'leisureImage' | 'golfImage',
+    newUrl: string
+  ) => {
+    setFormData(prev => ({ ...prev, [field]: newUrl }));
+    try {
+      await updateHotelData({ [field]: newUrl });
+      showToast(`${field === 'heroImage' ? 'Hero banner' : field === 'logoImage' ? 'Logo' : 'Photo'} updated & broadcasted!`);
+    } catch (e: any) {
+      console.error('Image broadcast error:', e);
+      showToast('Image saved locally; will sync to cloud.');
+    }
+  };
 
   // Update QR preview on Wi-Fi changes
   useEffect(() => {
@@ -120,6 +139,7 @@ export const HostConsole: React.FC = () => {
     setIsSaving(true);
     try {
       await updateHotelData(formData);
+      isDirtyRef.current = false;
       setIsSaved(true);
       showToast('All changes broadcasted live to Cloud Firestore & in-room devices!');
       setTimeout(() => setIsSaved(false), 2500);
@@ -436,10 +456,17 @@ export const HostConsole: React.FC = () => {
                       <ImageUploadField
                         label={`Banner Image for "${section.title}"`}
                         value={section.image || ''}
-                        onChange={newUrl => {
+                        onChange={async newUrl => {
+                          isDirtyRef.current = true;
                           const next = [...formData.guideSections];
                           next[sIdx] = { ...next[sIdx], image: newUrl };
-                          setFormData({ ...formData, guideSections: next });
+                          setFormData(prev => ({ ...prev, guideSections: next }));
+                          try {
+                            await updateHotelData({ guideSections: next });
+                            showToast(`Section banner updated & broadcasted!`);
+                          } catch (e) {
+                            console.error('Section image save error:', e);
+                          }
                         }}
                         hint="Cover photo displayed inside the expanded guidebook accordion."
                         aspectRatio="video"
@@ -822,7 +849,7 @@ export const HostConsole: React.FC = () => {
               <ImageUploadField
                 label="Property Logo / Crest"
                 value={formData.logoImage || ''}
-                onChange={newUrl => setFormData({ ...formData, logoImage: newUrl })}
+                onChange={newUrl => handleUpdateImage('logoImage', newUrl)}
                 hint="Displayed in top header bar, hero badge, and on printable table standees."
                 aspectRatio="square"
                 presets={logoPresets}
@@ -835,7 +862,7 @@ export const HostConsole: React.FC = () => {
               <ImageUploadField
                 label="Main Resort Hero Banner Image"
                 value={formData.heroImage}
-                onChange={newUrl => setFormData({ ...formData, heroImage: newUrl })}
+                onChange={newUrl => handleUpdateImage('heroImage', newUrl)}
                 hint="Full-width cover photo on the guest guidebook home screen."
                 aspectRatio="video"
                 presets={resortPresets}
@@ -990,7 +1017,7 @@ export const HostConsole: React.FC = () => {
             <ImageUploadField
               label="Junction One Dining Main Image"
               value={formData.diningImage}
-              onChange={newUrl => setFormData({ ...formData, diningImage: newUrl })}
+              onChange={newUrl => handleUpdateImage('diningImage', newUrl)}
               aspectRatio="video"
               presets={resortPresets}
               placeholderText="Upload restaurant image"
@@ -1166,7 +1193,7 @@ export const HostConsole: React.FC = () => {
             <ImageUploadField
               label="Indoor Heated Pool & Spa Photo"
               value={formData.leisureImage}
-              onChange={newUrl => setFormData({ ...formData, leisureImage: newUrl })}
+              onChange={newUrl => handleUpdateImage('leisureImage', newUrl)}
               aspectRatio="video"
               presets={resortPresets}
               placeholderText="Pool & Spa photo"
@@ -1175,7 +1202,7 @@ export const HostConsole: React.FC = () => {
             <ImageUploadField
               label="Championship Golf Course Photo"
               value={formData.golfImage}
-              onChange={newUrl => setFormData({ ...formData, golfImage: newUrl })}
+              onChange={newUrl => handleUpdateImage('golfImage', newUrl)}
               aspectRatio="video"
               presets={resortPresets}
               placeholderText="Golf course photo"

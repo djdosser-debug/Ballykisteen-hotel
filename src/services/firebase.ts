@@ -45,6 +45,14 @@ export async function testConnection(): Promise<boolean> {
   }
 }
 
+const normalizeAssetPath = (url?: string): string => {
+  if (!url) return '';
+  if (url.startsWith('/src/assets/images/')) {
+    return url.replace('/src/assets/images/', '/images/');
+  }
+  return url;
+};
+
 /**
  * Strips unsupported undefined fields and deeply cleans data for Firestore.
  */
@@ -58,7 +66,7 @@ function sanitizeForFirestore(obj: any): any {
  * Saves or updates resort compendium data in Cloud Firestore.
  * Automatically timestamps and broadcasts to all connected in-room devices.
  */
-export async function saveCompendiumToFirestore(data: HotelData): Promise<void> {
+export async function saveCompendiumToFirestore(data: Partial<HotelData>): Promise<void> {
   if (!isFirebaseConfigured) return;
   const docRef = doc(db, COMPENDIUM_COLLECTION, RESORT_DOC_ID);
   
@@ -100,12 +108,12 @@ export function listenToCompendium(
         const merged: HotelData = {
           ...initialHotelData,
           ...remoteData,
-          // Explicitly prioritize remote image assets
-          heroImage: remoteData.heroImage !== undefined ? remoteData.heroImage : initialHotelData.heroImage,
-          logoImage: remoteData.logoImage !== undefined ? remoteData.logoImage : initialHotelData.logoImage,
-          diningImage: remoteData.diningImage !== undefined ? remoteData.diningImage : initialHotelData.diningImage,
-          leisureImage: remoteData.leisureImage !== undefined ? remoteData.leisureImage : initialHotelData.leisureImage,
-          golfImage: remoteData.golfImage !== undefined ? remoteData.golfImage : initialHotelData.golfImage,
+          // Explicitly prioritize remote image assets with legacy path healing
+          heroImage: normalizeAssetPath(remoteData.heroImage) || initialHotelData.heroImage,
+          logoImage: normalizeAssetPath(remoteData.logoImage) || initialHotelData.logoImage,
+          diningImage: normalizeAssetPath(remoteData.diningImage) || initialHotelData.diningImage,
+          leisureImage: normalizeAssetPath(remoteData.leisureImage) || initialHotelData.leisureImage,
+          golfImage: normalizeAssetPath(remoteData.golfImage) || initialHotelData.golfImage,
           // Guarantee nested safe defaults
           bookingLinks: {
             ...initialHotelData.bookingLinks,

@@ -45,6 +45,14 @@ interface HotelContextType {
 
 const HotelContext = createContext<HotelContextType | undefined>(undefined);
 
+const normalizeAssetPath = (url?: string): string => {
+  if (!url) return '';
+  if (url.startsWith('/src/assets/images/')) {
+    return url.replace('/src/assets/images/', '/images/');
+  }
+  return url;
+};
+
 export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // 1. Initial State from localStorage for instant offline render
   const [hotelData, setHotelData] = useState<HotelData>(() => {
@@ -55,11 +63,11 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return { 
           ...initialHotelData, 
           ...parsed,
-          heroImage: parsed.heroImage ?? initialHotelData.heroImage,
-          logoImage: parsed.logoImage ?? initialHotelData.logoImage,
-          diningImage: parsed.diningImage ?? initialHotelData.diningImage,
-          leisureImage: parsed.leisureImage ?? initialHotelData.leisureImage,
-          golfImage: parsed.golfImage ?? initialHotelData.golfImage,
+          heroImage: normalizeAssetPath(parsed.heroImage) || initialHotelData.heroImage,
+          logoImage: normalizeAssetPath(parsed.logoImage) || initialHotelData.logoImage,
+          diningImage: normalizeAssetPath(parsed.diningImage) || initialHotelData.diningImage,
+          leisureImage: normalizeAssetPath(parsed.leisureImage) || initialHotelData.leisureImage,
+          golfImage: normalizeAssetPath(parsed.golfImage) || initialHotelData.golfImage,
           bookingLinks: { ...initialHotelData.bookingLinks, ...(parsed.bookingLinks || {}) }
         };
       }
@@ -142,20 +150,28 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setSyncStatus('syncing');
     isWritingLocally.current = true;
 
+    // Synchronously resolve updated state
     let nextData: HotelData;
     setHotelData(prev => {
       nextData = typeof updater === 'function' ? updater(prev) : { ...prev, ...updater };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
-      } catch (e) {
-        console.error('Failed to save hotel data to local storage', e);
-      }
       return nextData;
     });
 
+    // Compute explicit snapshot of next data
+    const payloadToSave: HotelData = typeof updater === 'function' 
+      ? updater(hotelData) 
+      : { ...hotelData, ...updater };
+
+    // Immediately cache to localStorage
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payloadToSave));
+    } catch (e) {
+      console.error('Failed to save hotel data to local storage', e);
+    }
+
     try {
       if (isFirebaseConfigured) {
-        await saveCompendiumToFirestore(nextData!);
+        await saveCompendiumToFirestore(payloadToSave);
         setSyncStatus('synced');
         setLastSyncTime(new Date());
         setIsCloudConnected(true);
