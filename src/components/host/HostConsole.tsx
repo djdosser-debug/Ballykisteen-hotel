@@ -123,8 +123,9 @@ export const HostConsole: React.FC = () => {
       setIsSaved(true);
       showToast('All changes broadcasted live to Cloud Firestore & in-room devices!');
       setTimeout(() => setIsSaved(false), 2500);
-    } catch (err) {
-      showToast('Saved locally; will sync when online');
+    } catch (err: any) {
+      console.error('Save error:', err);
+      showToast(`Warning: Cloud sync error (${err?.message || 'check connection'}). Data saved locally.`);
     } finally {
       setIsSaving(false);
     }

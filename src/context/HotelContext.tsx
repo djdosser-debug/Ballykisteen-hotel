@@ -55,7 +55,11 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return { 
           ...initialHotelData, 
           ...parsed,
-          logoImage: parsed.logoImage || initialHotelData.logoImage,
+          heroImage: parsed.heroImage ?? initialHotelData.heroImage,
+          logoImage: parsed.logoImage ?? initialHotelData.logoImage,
+          diningImage: parsed.diningImage ?? initialHotelData.diningImage,
+          leisureImage: parsed.leisureImage ?? initialHotelData.leisureImage,
+          golfImage: parsed.golfImage ?? initialHotelData.golfImage,
           bookingLinks: { ...initialHotelData.bookingLinks, ...(parsed.bookingLinks || {}) }
         };
       }
@@ -161,6 +165,7 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch (error) {
       console.error('Failed to sync to Cloud Firestore:', error);
       setSyncStatus('error');
+      throw error;
     } finally {
       setTimeout(() => {
         isWritingLocally.current = false;

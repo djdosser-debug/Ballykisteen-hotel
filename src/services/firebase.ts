@@ -4,11 +4,9 @@ import {
   doc, 
   onSnapshot, 
   setDoc, 
-  getDoc,
   getDocFromServer,
   Firestore,
   serverTimestamp,
-  SnapshotMetadata
 } from 'firebase/firestore';
 import firebaseConfigJson from '../../firebase-applet-config.json';
 import { HotelData } from '../types/guidebook';
@@ -43,9 +41,17 @@ export async function testConnection(): Promise<boolean> {
     if (error instanceof Error && error.message.includes('the client is offline')) {
       console.warn('Firestore connection: client appears offline, running with local cache.');
     }
-    // Expected on fresh collection or offline, connectivity is established
     return true;
   }
+}
+
+/**
+ * Strips unsupported undefined fields and deeply cleans data for Firestore.
+ */
+function sanitizeForFirestore(obj: any): any {
+  return JSON.parse(JSON.stringify(obj, (key, value) => {
+    return value === undefined ? '' : value;
+  }));
 }
 
 /**
@@ -56,13 +62,19 @@ export async function saveCompendiumToFirestore(data: HotelData): Promise<void> 
   if (!isFirebaseConfigured) return;
   const docRef = doc(db, COMPENDIUM_COLLECTION, RESORT_DOC_ID);
   
+  const cleanData = sanitizeForFirestore(data);
   const payload = {
-    ...data,
+    ...cleanData,
     updatedAt: new Date().toISOString(),
     _serverTimestamp: serverTimestamp(),
   };
 
-  await setDoc(docRef, payload, { merge: true });
+  try {
+    await setDoc(docRef, payload, { merge: true });
+  } catch (err: any) {
+    console.error('Firestore save failed:', err);
+    throw err;
+  }
 }
 
 /**
@@ -88,7 +100,13 @@ export function listenToCompendium(
         const merged: HotelData = {
           ...initialHotelData,
           ...remoteData,
-          // Guarantee safe defaults
+          // Explicitly prioritize remote image assets
+          heroImage: remoteData.heroImage !== undefined ? remoteData.heroImage : initialHotelData.heroImage,
+          logoImage: remoteData.logoImage !== undefined ? remoteData.logoImage : initialHotelData.logoImage,
+          diningImage: remoteData.diningImage !== undefined ? remoteData.diningImage : initialHotelData.diningImage,
+          leisureImage: remoteData.leisureImage !== undefined ? remoteData.leisureImage : initialHotelData.leisureImage,
+          golfImage: remoteData.golfImage !== undefined ? remoteData.golfImage : initialHotelData.golfImage,
+          // Guarantee nested safe defaults
           bookingLinks: {
             ...initialHotelData.bookingLinks,
             ...(remoteData.bookingLinks || {}),
