@@ -146,6 +146,27 @@ export function listenToCompendium(
           dining: Array.isArray(remoteData.dining) ? remoteData.dining : initialHotelData.dining,
           attractions: Array.isArray(remoteData.attractions) ? remoteData.attractions : initialHotelData.attractions,
           guideSections: Array.isArray(remoteData.guideSections) ? remoteData.guideSections : initialHotelData.guideSections,
+          quickActions: Array.isArray(remoteData.quickActions) ? remoteData.quickActions : initialHotelData.quickActions,
+          homeConfig: {
+            ...initialHotelData.homeConfig,
+            ...(remoteData.homeConfig || {}),
+            highlights: Array.isArray(remoteData.homeConfig?.highlights)
+              ? remoteData.homeConfig.highlights
+              : initialHotelData.homeConfig?.highlights || [],
+            reviewCard: {
+              enabled: remoteData.homeConfig?.reviewCard?.enabled ?? initialHotelData.homeConfig?.reviewCard?.enabled ?? true,
+              rating: remoteData.homeConfig?.reviewCard?.rating ?? initialHotelData.homeConfig?.reviewCard?.rating ?? '4.5 / 5.0',
+              title: remoteData.homeConfig?.reviewCard?.title ?? initialHotelData.homeConfig?.reviewCard?.title ?? 'Enjoying your stay at Ballykisteen?',
+              subtitle: remoteData.homeConfig?.reviewCard?.subtitle ?? initialHotelData.homeConfig?.reviewCard?.subtitle ?? 'Share your feedback on Google Maps reviews.',
+              buttonText: remoteData.homeConfig?.reviewCard?.buttonText ?? initialHotelData.homeConfig?.reviewCard?.buttonText ?? 'Review Us',
+              reviewUrl: remoteData.homeConfig?.reviewCard?.reviewUrl ?? initialHotelData.homeConfig?.reviewCard?.reviewUrl ?? 'https://www.google.com/maps/place/Great+National+Ballykisteen+Golf+Hotel/@52.502931,-8.204561,15z',
+            },
+            locationBar: {
+              enabled: remoteData.homeConfig?.locationBar?.enabled ?? initialHotelData.homeConfig?.locationBar?.enabled ?? true,
+              eircodeNote: remoteData.homeConfig?.locationBar?.eircodeNote ?? initialHotelData.homeConfig?.locationBar?.eircodeNote ?? 'Eircode: E34 VK12 · N24 Route',
+              mapsButtonText: remoteData.homeConfig?.locationBar?.mapsButtonText ?? initialHotelData.homeConfig?.locationBar?.mapsButtonText ?? 'Maps →',
+            },
+          },
           standee: {
             ...initialHotelData.standee,
             ...(remoteData.standee || {}),

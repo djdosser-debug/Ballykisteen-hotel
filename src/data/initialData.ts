@@ -1,5 +1,113 @@
 import { HotelData } from '../types/guidebook';
 
+export const defaultQuickActions = [
+  {
+    id: "qa-wifi",
+    title: "Wi-Fi Connect",
+    subtitle: "1-tap copy & QR scan",
+    iconName: "Wifi",
+    actionType: "modal" as const,
+    actionPayload: "wifi",
+    bgColor: "emerald" as const,
+    isFullWidth: false,
+    enabled: true
+  },
+  {
+    id: "qa-room-key",
+    title: "Check-in & Keys",
+    subtitle: "Arrivals & baggage",
+    iconName: "KeyRound",
+    actionType: "modal" as const,
+    actionPayload: "roomKey",
+    bgColor: "amber" as const,
+    isFullWidth: false,
+    enabled: true
+  },
+  {
+    id: "qa-dining",
+    title: "Junction One Dining",
+    subtitle: "Carvery, dinner & drinks",
+    iconName: "Utensils",
+    actionType: "modal" as const,
+    actionPayload: "dining",
+    bgColor: "orange" as const,
+    isFullWidth: false,
+    enabled: true
+  },
+  {
+    id: "qa-leisure",
+    title: "Pool, Spa & Golf",
+    subtitle: "Timetable & gym access",
+    iconName: "Waves",
+    actionType: "modal" as const,
+    actionPayload: "leisure",
+    bgColor: "teal" as const,
+    isFullWidth: false,
+    enabled: true
+  },
+  {
+    id: "qa-front-desk",
+    title: "Call Front Desk Reception",
+    subtitle: "Direct hotel assistance & room service order",
+    iconName: "Phone",
+    actionType: "tel" as const,
+    actionPayload: "+3536233333",
+    bgColor: "primary" as const,
+    isFullWidth: true,
+    badge: "24/7 Ext. 0",
+    enabled: true
+  }
+];
+
+export const defaultHomeConfig = {
+  welcomeSubtitle: "Welcome to Tipperary",
+  starRatingText: "4-Star Resort",
+  checkInStripText: "Check-in: 3:00 PM",
+  wifiStripText: "Wi-Fi: Ballykisteen_Guest",
+  bulletinTitle: "Today's Resort Bulletin",
+  bulletinLocation: "Limerick Junction",
+  bulletinEnabled: true,
+  highlightsTitle: "Resort Highlights",
+  highlightsSubtitle: "Explore all guides →",
+  highlights: [
+    {
+      id: "hl-golf",
+      title: "Championship Parkland Golf",
+      subtitle: "Preferential green fees for hotel residents",
+      badge: "Des Smyth Design · 18 Holes",
+      image: "/images/championship_golf_course_1790677430157.jpg",
+      actionType: "tab" as const,
+      actionPayload: "guide",
+      actionLabel: "Book Tee Time →",
+      enabled: true
+    },
+    {
+      id: "hl-dining",
+      title: "Junction One Bar & Restaurant",
+      subtitle: "Carvery lunch, dinner & afternoon tea",
+      badge: "Irish Seasonal Cuisine",
+      image: "/images/junction_one_dining_1790677408670.jpg",
+      actionType: "modal" as const,
+      actionPayload: "dining",
+      actionLabel: "View Menus →",
+      enabled: true
+    }
+  ],
+  reviewCard: {
+    enabled: true,
+    rating: "4.5 / 5.0",
+    title: "Enjoying your stay at Ballykisteen?",
+    subtitle: "Share your feedback on Google Maps reviews.",
+    buttonText: "Review Us",
+    reviewUrl: "https://www.google.com/maps/place/Great+National+Ballykisteen+Golf+Hotel/@52.502931,-8.204561,15z"
+  },
+  locationBar: {
+    enabled: true,
+    eircodeNote: "Eircode: E34 VK12 · N24 Route",
+    mapsButtonText: "Maps →"
+  }
+};
+
 export const initialHotelData: HotelData = {
   name: "Great National Ballykisteen Golf Hotel & Leisure Club",
   tagline: "4-Star Country Resort & 18-Hole Championship Golf Course",
@@ -376,5 +484,7 @@ export const initialHotelData: HotelData = {
     showWifiBox: true,
     paperSize: "tent_5x7"
   },
-  hostPasscode: "ballykisteen2025"
+  hostPasscode: "ballykisteen2025",
+  quickActions: defaultQuickActions,
+  homeConfig: defaultHomeConfig
 };

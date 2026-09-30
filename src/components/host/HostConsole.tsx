@@ -40,6 +40,7 @@ import { useHotel } from '../../context/HotelContext';
 import { Attraction, DiningItem, GuideSection } from '../../types/guidebook';
 import { generateQrDataUrl, buildWifiQrString } from '../../utils/qrCode';
 import { ImageUploadField } from './ImageUploadField';
+import { HomePageEditor } from './HomePageEditor';
 
 const resortPresets = [
   { label: 'Resort Exterior', url: '/images/ballykisteen_resort_hero_1790677395754.jpg' },
@@ -87,8 +88,8 @@ export const HostConsole: React.FC = () => {
   } = useHotel();
 
   const [activeHostTab, setActiveHostTab] = useState<
-    'sections' | 'links' | 'property' | 'dining' | 'amenities' | 'attractions' | 'wifi' | 'standee'
-  >('sections');
+    'home' | 'sections' | 'links' | 'property' | 'dining' | 'amenities' | 'attractions' | 'wifi' | 'standee'
+  >('home');
   
   const [wifiPreviewQr, setWifiPreviewQr] = useState<string>('');
   const [formData, setFormData] = useState(hotelData);
@@ -327,6 +328,7 @@ export const HostConsole: React.FC = () => {
       {/* Host Navigation Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 border-b border-slate-200">
         {[
+          { id: 'home', label: 'Home Page & Quick Actions', icon: Sparkles },
           { id: 'sections', label: 'Guidebook Sections (Add/Remove)', icon: BookOpen },
           { id: 'links', label: 'Web Links & Bookings', icon: Globe },
           { id: 'property', label: 'Property & Branding', icon: Building2 },
@@ -354,6 +356,20 @@ export const HostConsole: React.FC = () => {
           );
         })}
       </div>
+
+      {/* ========================================================= */}
+      {/* Tab 0: Home Page & Quick Actions Editor                   */}
+      {/* ========================================================= */}
+      {activeHostTab === 'home' && (
+        <HomePageEditor
+          formData={formData}
+          setFormData={setFormData}
+          handleUpdateImage={handleUpdateImage}
+          showToast={showToast}
+          isDirtyRef={isDirtyRef}
+          updateHotelData={updateHotelData}
+        />
+      )}
 
       {/* ========================================================= */}
       {/* Tab 1: Guidebook Sections (Add / Remove / Reorder / Edit) */}

@@ -68,7 +68,28 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           diningImage: normalizeAssetPath(parsed.diningImage) || initialHotelData.diningImage,
           leisureImage: normalizeAssetPath(parsed.leisureImage) || initialHotelData.leisureImage,
           golfImage: normalizeAssetPath(parsed.golfImage) || initialHotelData.golfImage,
-          bookingLinks: { ...initialHotelData.bookingLinks, ...(parsed.bookingLinks || {}) }
+          bookingLinks: { ...initialHotelData.bookingLinks, ...(parsed.bookingLinks || {}) },
+          quickActions: Array.isArray(parsed.quickActions) ? parsed.quickActions : initialHotelData.quickActions,
+          homeConfig: {
+            ...initialHotelData.homeConfig,
+            ...(parsed.homeConfig || {}),
+            highlights: Array.isArray(parsed.homeConfig?.highlights)
+              ? parsed.homeConfig.highlights
+              : initialHotelData.homeConfig?.highlights || [],
+            reviewCard: {
+              enabled: parsed.homeConfig?.reviewCard?.enabled ?? initialHotelData.homeConfig?.reviewCard?.enabled ?? true,
+              rating: parsed.homeConfig?.reviewCard?.rating ?? initialHotelData.homeConfig?.reviewCard?.rating ?? '4.5 / 5.0',
+              title: parsed.homeConfig?.reviewCard?.title ?? initialHotelData.homeConfig?.reviewCard?.title ?? 'Enjoying your stay at Ballykisteen?',
+              subtitle: parsed.homeConfig?.reviewCard?.subtitle ?? initialHotelData.homeConfig?.reviewCard?.subtitle ?? 'Share your feedback on Google Maps reviews.',
+              buttonText: parsed.homeConfig?.reviewCard?.buttonText ?? initialHotelData.homeConfig?.reviewCard?.buttonText ?? 'Review Us',
+              reviewUrl: parsed.homeConfig?.reviewCard?.reviewUrl ?? initialHotelData.homeConfig?.reviewCard?.reviewUrl ?? 'https://www.google.com/maps/place/Great+National+Ballykisteen+Golf+Hotel/@52.502931,-8.204561,15z',
+            },
+            locationBar: {
+              enabled: parsed.homeConfig?.locationBar?.enabled ?? initialHotelData.homeConfig?.locationBar?.enabled ?? true,
+              eircodeNote: parsed.homeConfig?.locationBar?.eircodeNote ?? initialHotelData.homeConfig?.locationBar?.eircodeNote ?? 'Eircode: E34 VK12 · N24 Route',
+              mapsButtonText: parsed.homeConfig?.locationBar?.mapsButtonText ?? initialHotelData.homeConfig?.locationBar?.mapsButtonText ?? 'Maps →',
+            },
+          }
         };
       }
     } catch (e) {

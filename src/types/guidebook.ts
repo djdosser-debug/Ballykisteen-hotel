@@ -119,6 +119,57 @@ export interface StandeeConfig {
   paperSize: 'a4' | 'tent_5x7';
 }
 
+export interface QuickActionItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  iconName: string;
+  actionType: 'modal' | 'tel' | 'link' | 'tab';
+  actionPayload: string;
+  bgColor?: 'emerald' | 'amber' | 'orange' | 'teal' | 'primary' | 'blue' | 'purple' | 'rose';
+  isFullWidth?: boolean;
+  badge?: string;
+  enabled?: boolean;
+}
+
+export interface HomeHighlightCard {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  image: string;
+  actionType: 'tab' | 'modal' | 'link';
+  actionPayload: string;
+  actionLabel: string;
+  enabled: boolean;
+}
+
+export interface HomeConfig {
+  welcomeSubtitle?: string;
+  starRatingText?: string;
+  checkInStripText?: string;
+  wifiStripText?: string;
+  bulletinTitle?: string;
+  bulletinLocation?: string;
+  bulletinEnabled?: boolean;
+  highlightsTitle?: string;
+  highlightsSubtitle?: string;
+  highlights?: HomeHighlightCard[];
+  reviewCard?: {
+    enabled: boolean;
+    rating: string;
+    title: string;
+    subtitle: string;
+    buttonText: string;
+    reviewUrl: string;
+  };
+  locationBar?: {
+    enabled: boolean;
+    eircodeNote: string;
+    mapsButtonText: string;
+  };
+}
+
 export interface HotelData {
   name: string;
   tagline: string;
@@ -140,4 +191,6 @@ export interface HotelData {
   faqs: FAQItem[];
   standee: StandeeConfig;
   hostPasscode: string;
+  quickActions?: QuickActionItem[];
+  homeConfig?: HomeConfig;
 }
