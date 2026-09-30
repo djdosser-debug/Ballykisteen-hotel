@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "HotelCompendium": {
+      "title": "HotelCompendium",
+      "description": "Complete resort compendium, digital guest guidebook, Wi-Fi credentials, dining menus, and guidelines for Ballykisteen Hotel.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Official name of the resort property."
+        },
+        "tagline": {
+          "type": "string",
+          "description": "Resort tagline or classification badge."
+        },
+        "logoImage": {
+          "type": "string",
+          "description": "Official logo or crest image URL or base64 URI."
+        },
+        "heroImage": {
+          "type": "string",
+          "description": "Hero banner cover image URL."
+        },
+        "diningImage": {
+          "type": "string",
+          "description": "Junction One restaurant cover image."
+        },
+        "leisureImage": {
+          "type": "string",
+          "description": "Indoor pool and spa cover image."
+        },
+        "golfImage": {
+          "type": "string",
+          "description": "Championship golf course cover image."
+        },
+        "contact": {
+          "type": "object",
+          "description": "Resort reception and pro shop contacts, email, and address."
+        },
+        "stayHours": {
+          "type": "object",
+          "description": "Check-in, check-out, and breakfast service hours."
+        },
+        "wifi": {
+          "type": "object",
+          "description": "Guest Wi-Fi network SSID, password, and encryption parameters."
+        },
+        "bulletin": {
+          "type": "object",
+          "description": "Daily weather, course status, chef special, and estate notices."
+        },
+        "bookingLinks": {
+          "type": "object",
+          "description": "Online booking links for dining, golf tee times, spa, and rooms."
+        },
+        "dining": {
+          "type": "array",
+          "description": "Menu offerings, serving hours, and dietary highlights."
+        },
+        "leisure": {
+          "type": "object",
+          "description": "Pool, gym, kids swim, and adult-only schedule."
+        },
+        "golf": {
+          "type": "object",
+          "description": "18-hole parkland course details, rates, and dress code."
+        },
+        "attractions": {
+          "type": "array",
+          "description": "Tipperary local destinations, travel times, and maps."
+        },
+        "guideSections": {
+          "type": "array",
+          "description": "Comprehensive guidebook sections, guidelines, and action buttons."
+        },
+        "standee": {
+          "type": "object",
+          "description": "Table tent card and printable QR standee configuration."
+        },
+        "hostPasscode": {
+          "type": "string",
+          "description": "Administrative PIN for host console access."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of the most recent synchronization."
+        }
+      },
+      "required": ["name", "contact", "wifi", "guideSections"]
+    }
+  },
+  "firestore": {
+    "/hotelCompendiums/{resortId}": {
+      "schema": "#/entities/HotelCompendium",
+      "description": "Global live resort compendium data synchronized in real-time across in-room tablets and guest devices."
+    }
+  }
+}

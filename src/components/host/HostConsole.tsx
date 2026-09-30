@@ -81,7 +81,9 @@ export const HostConsole: React.FC = () => {
     setAppMode, 
     logoutHost, 
     showToast,
-    setActiveModal 
+    setActiveModal,
+    syncStatus,
+    lastSyncTime
   } = useHotel();
 
   const [activeHostTab, setActiveHostTab] = useState<
@@ -91,6 +93,7 @@ export const HostConsole: React.FC = () => {
   const [wifiPreviewQr, setWifiPreviewQr] = useState<string>('');
   const [formData, setFormData] = useState(hotelData);
   const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [expandedSectionId, setExpandedSectionId] = useState<string>('');
 
   useEffect(() => {
@@ -113,11 +116,18 @@ export const HostConsole: React.FC = () => {
     });
   }, [formData.wifi]);
 
-  const handleSave = () => {
-    updateHotelData(formData);
-    setIsSaved(true);
-    showToast('All changes saved & live for guests!');
-    setTimeout(() => setIsSaved(false), 2000);
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await updateHotelData(formData);
+      setIsSaved(true);
+      showToast('All changes broadcasted live to Cloud Firestore & in-room devices!');
+      setTimeout(() => setIsSaved(false), 2500);
+    } catch (err) {
+      showToast('Saved locally; will sync when online');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // --- Guide Sections Handlers ---
@@ -249,12 +259,16 @@ export const HostConsole: React.FC = () => {
             <Building2 className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h2 className="font-serif text-xl font-bold text-white">
                 Host Management Suite
               </h2>
               <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
                 Admin Session Active
+              </span>
+              <span className="text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 px-2.5 py-0.5 rounded-full font-medium flex items-center gap-1.5 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Firestore: dub-girder-kdw25</span>
               </span>
             </div>
             <p className="text-xs text-white/70">
@@ -1631,21 +1645,29 @@ export const HostConsole: React.FC = () => {
           </button>
           <button
             onClick={handleSave}
+            disabled={isSaving}
             className={`px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 transition-all shadow-md active:scale-98 ${
               isSaved
                 ? 'bg-emerald-700 text-white'
+                : isSaving
+                ? 'bg-amber-700 text-white opacity-90'
                 : 'bg-[#14382c] hover:bg-[#1c4a3a] text-white'
             }`}
           >
             {isSaved ? (
               <>
                 <Check className="w-4 h-4" />
-                <span>Saved & Synced!</span>
+                <span>Broadcasted to Firestore!</span>
+              </>
+            ) : isSaving ? (
+              <>
+                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Broadcasting to Estate...</span>
               </>
             ) : (
               <>
                 <Save className="w-4 h-4 text-[#c5a059]" />
-                <span>Save All Changes</span>
+                <span>Save & Broadcast to Estate</span>
               </>
             )}
           </button>

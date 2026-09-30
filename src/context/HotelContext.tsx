@@ -1,6 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { HotelData } from '../types/guidebook';
 import { initialHotelData } from '../data/initialData';
+import { 
+  saveCompendiumToFirestore, 
+  listenToCompendium, 
+  isFirebaseConfigured 
+} from '../services/firebase';
 
 const STORAGE_KEY = 'ballykisteen_hotel_guidebook_v1';
 const HOST_AUTH_KEY = 'ballykisteen_host_auth_session';
@@ -9,11 +14,12 @@ export type ViewMode = 'mobile' | 'desktop';
 export type AppMode = 'guest' | 'host';
 export type ActiveTab = 'home' | 'guide' | 'explore' | 'search';
 export type ModalType = 'wifi' | 'leisure' | 'roomKey' | 'dining' | 'standee' | 'hostLogin' | 'contact' | null;
+export type SyncStatus = 'synced' | 'syncing' | 'offline' | 'error';
 
 interface HotelContextType {
   hotelData: HotelData;
-  updateHotelData: (updater: Partial<HotelData> | ((prev: HotelData) => HotelData)) => void;
-  resetToDefaults: () => void;
+  updateHotelData: (updater: Partial<HotelData> | ((prev: HotelData) => HotelData)) => Promise<void>;
+  resetToDefaults: () => Promise<void>;
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   appMode: AppMode;
@@ -31,11 +37,16 @@ interface HotelContextType {
   setSearchQuery: (q: string) => void;
   exploreFilter: string;
   setExploreFilter: (f: string) => void;
+  // Real-time Cloud Firestore synchronization state
+  syncStatus: SyncStatus;
+  lastSyncTime: Date | null;
+  isCloudConnected: boolean;
 }
 
 const HotelContext = createContext<HotelContextType | undefined>(undefined);
 
 export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // 1. Initial State from localStorage for instant offline render
   const [hotelData, setHotelData] = useState<HotelData>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -62,6 +73,13 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [exploreFilter, setExploreFilter] = useState<string>('all');
   const [toast, setToast] = useState<string | null>(null);
 
+  // Cloud Firestore Sync State
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>(isFirebaseConfigured ? 'syncing' : 'offline');
+  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
+  const [isCloudConnected, setIsCloudConnected] = useState<boolean>(isFirebaseConfigured);
+
+  const isWritingLocally = useRef(false);
+
   const [isHostAuthenticated, setIsHostAuthenticated] = useState<boolean>(() => {
     try {
       return sessionStorage.getItem(HOST_AUTH_KEY) === 'true';
@@ -80,39 +98,100 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => clearTimeout(timer);
   }, [toast]);
 
-  const updateHotelData = (updater: Partial<HotelData> | ((prev: HotelData) => HotelData)) => {
-    setHotelData(prev => {
-      const next = typeof updater === 'function' ? updater(prev) : { ...prev, ...updater };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch (e) {
-        console.error('Failed to save hotel data', e);
+  // 2. Real-Time Cloud Firestore Listener
+  // Instantly receives updates from staff without page reload
+  useEffect(() => {
+    if (!isFirebaseConfigured) {
+      setSyncStatus('offline');
+      return;
+    }
+
+    const unsubscribe = listenToCompendium(
+      (remoteData, metadata) => {
+        // If the write came from local pending state, we already have it
+        if (!isWritingLocally.current) {
+          setHotelData(remoteData);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteData));
+          } catch (e) {
+            console.error('Local cache error:', e);
+          }
+        }
+
+        setSyncStatus(metadata.fromCache ? 'offline' : 'synced');
+        setLastSyncTime(metadata.lastSynced);
+        setIsCloudConnected(!metadata.fromCache);
+      },
+      error => {
+        console.warn('Real-time sync issue, falling back to cached compendium:', error);
+        setSyncStatus('offline');
       }
-      return next;
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // 3. Mutator: Updates local state and broadcasts to Cloud Firestore
+  const updateHotelData = async (updater: Partial<HotelData> | ((prev: HotelData) => HotelData)) => {
+    setSyncStatus('syncing');
+    isWritingLocally.current = true;
+
+    let nextData: HotelData;
+    setHotelData(prev => {
+      nextData = typeof updater === 'function' ? updater(prev) : { ...prev, ...updater };
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextData));
+      } catch (e) {
+        console.error('Failed to save hotel data to local storage', e);
+      }
+      return nextData;
     });
+
+    try {
+      if (isFirebaseConfigured) {
+        await saveCompendiumToFirestore(nextData!);
+        setSyncStatus('synced');
+        setLastSyncTime(new Date());
+        setIsCloudConnected(true);
+      } else {
+        setSyncStatus('offline');
+      }
+    } catch (error) {
+      console.error('Failed to sync to Cloud Firestore:', error);
+      setSyncStatus('error');
+    } finally {
+      setTimeout(() => {
+        isWritingLocally.current = false;
+      }, 500);
+    }
   };
 
-  const resetToDefaults = () => {
+  const resetToDefaults = async () => {
+    setSyncStatus('syncing');
     setHotelData(initialHotelData);
     try {
       localStorage.removeItem(STORAGE_KEY);
+      if (isFirebaseConfigured) {
+        await saveCompendiumToFirestore(initialHotelData);
+        setSyncStatus('synced');
+        setLastSyncTime(new Date());
+      }
     } catch (e) {
       console.error(e);
+      setSyncStatus('error');
     }
-    showToast('Hotel guidebook restored to official defaults');
   };
 
   const loginHost = (passcode: string): boolean => {
-    if (passcode.trim() === hotelData.hostPasscode) {
+    if (passcode.trim() === hotelData.hostPasscode.trim()) {
       setIsHostAuthenticated(true);
       try {
         sessionStorage.setItem(HOST_AUTH_KEY, 'true');
       } catch (e) {
         console.error(e);
       }
-      setAppMode('host');
-      setActiveModal(null);
-      showToast('Host Management unlocked');
       return true;
     }
     return false;
@@ -120,13 +199,12 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const logoutHost = () => {
     setIsHostAuthenticated(false);
+    setAppMode('guest');
     try {
       sessionStorage.removeItem(HOST_AUTH_KEY);
     } catch (e) {
       console.error(e);
     }
-    setAppMode('guest');
-    showToast('Logged out of Host Management');
   };
 
   return (
@@ -152,6 +230,9 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setSearchQuery,
         exploreFilter,
         setExploreFilter,
+        syncStatus,
+        lastSyncTime,
+        isCloudConnected,
       }}
     >
       {children}

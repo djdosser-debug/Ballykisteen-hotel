@@ -25,7 +25,10 @@ export const TopDeviceBar: React.FC = () => {
     setActiveModal, 
     isHostAuthenticated, 
     logoutHost,
-    showToast 
+    showToast,
+    syncStatus,
+    lastSyncTime,
+    isCloudConnected
   } = useHotel();
 
   const [currentTime, setCurrentTime] = useState<string>('');
@@ -134,10 +137,39 @@ export const TopDeviceBar: React.FC = () => {
             </button>
           </div>
 
-          {/* Live Sync Status */}
-          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-[11px] font-medium">
-            <Radio className="w-3 h-3 animate-pulse text-emerald-400" />
-            <span>Live Sync Active</span>
+          {/* Live Cloud Firestore Sync Status Badge */}
+          <div 
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all border"
+            style={{
+              backgroundColor: syncStatus === 'synced' ? 'rgba(6, 78, 59, 0.7)' : syncStatus === 'syncing' ? 'rgba(120, 53, 15, 0.7)' : 'rgba(30, 41, 59, 0.7)',
+              borderColor: syncStatus === 'synced' ? 'rgba(16, 185, 129, 0.35)' : syncStatus === 'syncing' ? 'rgba(245, 158, 11, 0.35)' : 'rgba(148, 163, 184, 0.35)',
+              color: syncStatus === 'synced' ? '#34d399' : syncStatus === 'syncing' ? '#fbbf24' : '#cbd5e1'
+            }}
+            title={
+              lastSyncTime 
+                ? `Cloud Firestore synced at ${lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` 
+                : 'Cloud Firestore connected · Real-time listener active'
+            }
+          >
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                syncStatus === 'synced' ? 'bg-emerald-400' : syncStatus === 'syncing' ? 'bg-amber-400' : 'bg-slate-400'
+              }`} />
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                syncStatus === 'synced' ? 'bg-emerald-400' : syncStatus === 'syncing' ? 'bg-amber-400' : 'bg-slate-400'
+              }`} />
+            </span>
+            <span className="font-semibold tracking-wide text-[11px]">
+              {syncStatus === 'synced' && 'Cloud Synced'}
+              {syncStatus === 'syncing' && 'Broadcasting...'}
+              {syncStatus === 'offline' && 'Offline Ready'}
+              {syncStatus === 'error' && 'Sync Error'}
+            </span>
+            {lastSyncTime && (
+              <span className="hidden xl:inline text-white/50 text-[10px] pl-0.5">
+                {lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
           </div>
         </div>
 

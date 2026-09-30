@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidCompendium(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.contact is map
+        && data.wifi is map
+        && data.guideSections is list;
+    }
+
+    match /hotelCompendiums/{resortId} {
+      // Seamless guest access from in-room tablets and QR scans
+      allow read: if true;
+
+      // Staff and Host management updates with structural validation
+      allow create: if isValidCompendium(request.resource.data);
+      allow update: if isValidCompendium(request.resource.data);
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
