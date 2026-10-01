@@ -12,7 +12,6 @@ import { LeisurePoolModal } from './components/modals/LeisurePoolModal';
 import { RoomKeyModal } from './components/modals/RoomKeyModal';
 import { DiningReserveModal } from './components/modals/DiningReserveModal';
 import { PrintStandeeModal } from './components/modals/PrintStandeeModal';
-import { HostLoginModal } from './components/modals/HostLoginModal';
 import { Check, Info } from 'lucide-react';
 
 const GuidebookAppContent: React.FC = () => {
@@ -82,7 +81,6 @@ const GuidebookAppContent: React.FC = () => {
       <RoomKeyModal />
       <DiningReserveModal />
       <PrintStandeeModal />
-      <HostLoginModal />
     </div>
   );
 };

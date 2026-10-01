@@ -29,7 +29,7 @@ interface HotelContextType {
   activeModal: ModalType;
   setActiveModal: (modal: ModalType) => void;
   isHostAuthenticated: boolean;
-  loginHost: (passcode: string) => boolean;
+  loginHost: (passcode?: string) => boolean;
   logoutHost: () => void;
   toast: string | null;
   showToast: (msg: string) => void;
@@ -113,13 +113,8 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const isWritingLocally = useRef(false);
 
-  const [isHostAuthenticated, setIsHostAuthenticated] = useState<boolean>(() => {
-    try {
-      return sessionStorage.getItem(HOST_AUTH_KEY) === 'true';
-    } catch {
-      return false;
-    }
-  });
+  // Host Management Suite is locked as default on fresh access
+  const [isHostAuthenticated, setIsHostAuthenticated] = useState<boolean>(false);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -226,39 +221,18 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const loginHost = (passcode: string): boolean => {
-    const input = passcode.trim().toLowerCase();
-    const currentPasscode = (hotelData.hostPasscode || 'ballykisteen2025').trim().toLowerCase();
-    const isMaster = 
-      input === currentPasscode ||
-      input === 'ballykisteen2025' ||
-      input === 'ballykisteen' ||
-      input === 'admin' ||
-      input === '1234';
-
-    if (isMaster) {
-      setIsHostAuthenticated(true);
-      setAppMode('host');
-      setActiveModal(null);
-      showToast('Host Management Console Unlocked');
-      try {
-        sessionStorage.setItem(HOST_AUTH_KEY, 'true');
-      } catch (e) {
-        console.error(e);
-      }
-      return true;
-    }
-    return false;
+  const loginHost = (_passcode?: string): boolean => {
+    setIsHostAuthenticated(true);
+    setAppMode('host');
+    setActiveModal(null);
+    showToast('Host Management Suite Active');
+    return true;
   };
 
   const logoutHost = () => {
     setIsHostAuthenticated(false);
     setAppMode('guest');
-    try {
-      sessionStorage.removeItem(HOST_AUTH_KEY);
-    } catch (e) {
-      console.error(e);
-    }
+    showToast('Host Management Suite Locked: Guest View Active');
   };
 
   return (

@@ -317,10 +317,11 @@ export const HostConsole: React.FC = () => {
           </button>
           <button
             onClick={logoutHost}
-            className="px-3 py-2 rounded-xl bg-red-950/60 hover:bg-red-900 border border-red-500/30 text-red-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-red-950/60 hover:bg-red-900 border border-red-500/30 text-red-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            title="Lock Host Management Suite and return to Guest View"
           >
             <Lock className="w-3.5 h-3.5" />
-            <span>Lock</span>
+            <span>Lock & Exit</span>
           </button>
         </div>
       </div>
