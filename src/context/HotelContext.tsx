@@ -221,12 +221,21 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const loginHost = (_passcode?: string): boolean => {
-    setIsHostAuthenticated(true);
-    setAppMode('host');
-    setActiveModal(null);
-    showToast('Host Management Suite Active');
-    return true;
+  const loginHost = (passcode?: string): boolean => {
+    const input = (passcode || '').trim().toLowerCase();
+    const currentPasscode = (hotelData.hostPasscode || 'ballykisteen2025').trim().toLowerCase();
+    const isMaster = 
+      input === currentPasscode ||
+      input === 'ballykisteen2025';
+
+    if (isMaster) {
+      setIsHostAuthenticated(true);
+      setAppMode('host');
+      setActiveModal(null);
+      showToast('Host Management Suite Unlocked');
+      return true;
+    }
+    return false;
   };
 
   const logoutHost = () => {

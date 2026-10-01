@@ -14,7 +14,12 @@ export const PrintStandeeModal: React.FC = () => {
   useEffect(() => {
     if (!isOpen) return;
 
-    let payload = window.location.href;
+    let targetGuidebookUrl = window.location.origin + window.location.pathname;
+    if (hotelData.standee.customUrl && hotelData.standee.customUrl.trim() !== '') {
+      targetGuidebookUrl = hotelData.standee.customUrl.trim();
+    }
+
+    let payload = targetGuidebookUrl;
     if (qrMode === 'wifi') {
       payload = buildWifiQrString(
         hotelData.wifi.ssid,
@@ -22,8 +27,6 @@ export const PrintStandeeModal: React.FC = () => {
         hotelData.wifi.security,
         hotelData.wifi.hidden
       );
-    } else if (hotelData.standee.customUrl && hotelData.standee.customUrl.trim() !== '') {
-      payload = hotelData.standee.customUrl;
     }
 
     generateQrDataUrl(payload, { width: 500, margin: 1, darkColor: '#14382c' }).then(url => {

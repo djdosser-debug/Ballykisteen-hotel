@@ -57,7 +57,12 @@ export const TopDeviceBar: React.FC = () => {
     if (appMode === 'host') {
       logoutHost();
     } else {
-      loginHost();
+      if (isHostAuthenticated) {
+        setAppMode('host');
+        showToast('Host Management Suite Active');
+      } else {
+        setActiveModal('hostLogin');
+      }
     }
   };
 
